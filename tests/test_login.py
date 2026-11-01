@@ -2,6 +2,7 @@ from playwright.sync_api import Page, expect
 
 
 def test_valid_login(page: Page):
+    """TC_SD_01: Verify successful login with valid credentials"""
     # Open the login page
     page.goto("https://www.saucedemo.com/")
 
@@ -22,6 +23,7 @@ def test_valid_login(page: Page):
 
 
 def test_locked_out_user(page: Page):
+    """TC_SD_02: Verify login error fro a locked-out user."""
     # Open the login page
     page.goto("https://www.saucedemo.com/")
 
