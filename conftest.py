@@ -1,6 +1,8 @@
 import pytest
 from playwright.sync_api import Page
-
+from pages.cart_login import CartPage
+from pages.inventory import InventoryPage
+from pages.checkout import CheckoutPage
 
 @pytest.fixture
 def standard_user():
@@ -27,6 +29,14 @@ def logged_in_page(page: Page, standard_user):
 
     yield page
 
-    page.locator("#react-burger-menu-btn").click()
-    page.locator('[data-test="logout-sidebar-link"]').wait_for(state="visible")
-    page.locator('[data-test="logout-sidebar-link"]').click()
+    if page.locator("#react-burger-menu-btn").count()>0:
+        page.locator("#react-burger-menu-btn").click()
+        page.locator('[data-test="logout-sidebar-link"]').wait_for(state="visible")
+        page.locator('[data-test="logout-sidebar-link"]').click()
+
+@pytest.fixture
+def checkout_pages(logged_in_page):
+    invent = InventoryPage(logged_in_page)
+    cart = CartPage(logged_in_page)
+    checkout = CheckoutPage(logged_in_page)
+    return invent, cart, checkout
