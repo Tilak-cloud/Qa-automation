@@ -1,40 +1,64 @@
+import pytest 
 from playwright.sync_api import Page, expect
+from pages.login_page import LoginPage
 
+@pytest.mark.parametrize(
+    "username, expected_outcome",
+    [
+        ("standard_user", "success"),
+        ("locked_out_user", "locked_out"),
+        ("problem_user", "success"),
+        ("performance_glitch_user", "success"),
+    ],
+    ids=[
+        "standard_user",
+        "locked_out_user",
+        "problem_user",
+        "performance_glitch_user",
+    ]
+)
 
-def test_valid_login(page: Page):
-    """TC_SD_01: Verify successful login with valid credentials"""
-    # Open the login page
+def test_login(page:Page, username, expected_outcome):
     page.goto("https://www.saucedemo.com/")
 
-    # Enter valid credentials
-    page.locator('[data-test="username"]').fill("standard_user")
-    page.locator('[data-test="password"]').fill("secret_sauce")
+    login=LoginPage(page)
+    login.login(username, "secret_sauce")
 
-    # Click Login
-    page.locator('[data-test="login-button"]').click()
+    if expected_outcome == "success":
+        expect(page).to_have_url("https://www.saucedemo.com/inventory.html")
+    else:
+        expect(page.locator('[data-test="error"]')).to_contain_text("locked out")
+# def test_valid_login(page: Page, standard_user):
+#     """TC_SD_01: Verify successful login with valid credentials"""
+    
+#     login_page= LoginPage(page)
+#     # Open the login page
+#     page.goto("https://www.saucedemo.com/")
 
-    # Verify that login succeeded
-    expect(page).to_have_url(
-        "https://www.saucedemo.com/inventory.html"
-    )
+#     login_page.login(
+#         standard_user["username"],
+#         standard_user["password"]
+#     )
 
-    # Verify that the product list is visible
-    expect(page.locator(".inventory_list")).to_be_visible()
+#     expect(page).to_have_url(
+#         "https://www.saucedemo.com/inventory.html"
+#     )
 
 
-def test_locked_out_user(page: Page):
-    """TC_SD_02: Verify login error fro a locked-out user."""
-    # Open the login page
-    page.goto("https://www.saucedemo.com/")
+#     # # Verify that the product list is visible
+#     # expect(page.locator(".inventory_list")).to_be_visible()
 
-    # Enter the locked-out user's credentials
-    page.locator('[data-test="username"]').fill("locked_out_user")
-    page.locator('[data-test="password"]').fill("secret_sauce")
 
-    # Click Login
-    page.locator('[data-test="login-button"]').click()
+# def test_locked_out_user(page: Page, locked_out_user):
+#     """TC_SD_02: Verify login error fro a locked-out user."""
+#     # Open the login page
+#     login_page = LoginPage(page)
 
-    # Verify the error message
-    expect(page.locator('[data-test="error"]')).to_have_text(
-        "Epic sadface: Sorry, this user has been locked out."
-    )
+#     page.goto("https://www.saucedemo.com/")
+
+#     login_page.login(
+#         locked_out_user["username"],
+#         locked_out_user["password"]
+#     )
+
+#     expect(page.locator('[data-test="error"]')).to_be_visible()

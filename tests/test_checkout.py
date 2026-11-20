@@ -1,28 +1,27 @@
 from playwright.sync_api import Page, expect
+from pages.checkout import CheckoutPage 
+from pages.inventory import InventoryPage
+from pages.cart_login import CartPage
 
 
 def test_checkout_missing_first_name(logged_in_page: Page):
     """TC_SD_05: Verify checkout error when first name is missing."""
 
-    page = logged_in_page
+    checkout= CheckoutPage(logged_in_page)
+    invent= InventoryPage(logged_in_page)
+    cart= CartPage(logged_in_page)
 
     # Add a product to the cart
-    page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click()
-
+    invent.add_to_cart()
+    
     # Open the cart
-    page.locator('[data-test="shopping-cart-link"]').click()
-
+    cart.open_cart()
+    
     # Start checkout
-    page.locator('[data-test="checkout"]').click()
-
-    # Leave first name empty; enter the other details
-    page.locator('[data-test="lastName"]').fill("Tester")
-    page.locator('[data-test="postalCode"]').fill("560001")
-
-    # Continue checkout
-    page.locator('[data-test="continue"]').click()
+    cart.start_checkout()
+    checkout.fill_details("","Test","12345")
 
     # Verify the error message
-    expect(page.locator('[data-test="error"]')).to_have_text(
+    expect(logged_in_page.locator('[data-test="error"]')).to_have_text(
         "Error: First Name is required"
     )
