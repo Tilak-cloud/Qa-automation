@@ -2,6 +2,7 @@ import pytest
 from playwright.sync_api import Page, expect
 from pages.login_page import LoginPage
 
+@pytest.mark.smoke
 @pytest.mark.parametrize(
     "username, expected_outcome",
     [

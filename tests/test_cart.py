@@ -1,4 +1,7 @@
+import pytest
 from playwright.sync_api import Page, expect
+
+@pytest.mark.regression
 
 def test_add_item_to_cart(logged_in_page: Page,checkout_pages):
     """TC_SD_03: Verify that a product can be added to a cart."""

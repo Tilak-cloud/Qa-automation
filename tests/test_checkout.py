@@ -1,6 +1,7 @@
+import pytest
 from playwright.sync_api import Page, expect
 
-
+@pytest.mark.smoke
 def test_checkout_missing_first_name(logged_in_page: Page,checkout_pages):
     """TC_SD_05: Verify checkout error when first name is missing."""
 

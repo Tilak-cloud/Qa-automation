@@ -1,5 +1,6 @@
 import pytest
 from playwright.sync_api import Page
+from pathlib import Path
 from pages.cart_login import CartPage
 from pages.inventory import InventoryPage
 from pages.checkout import CheckoutPage
@@ -40,3 +41,22 @@ def checkout_pages(logged_in_page):
     cart = CartPage(logged_in_page)
     checkout = CheckoutPage(logged_in_page)
     return invent, cart, checkout
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+
+    outcome = yield
+    report = outcome.get_result()
+
+    if report.when == "call" and report.failed:
+
+        page = item.funcargs.get("page") or item.funcargs.get("logged_in_page")
+
+        if page:
+            screenshot_dir = Path("screenshots")
+            screenshot_dir.mkdir(exist_ok=True)
+
+            page.screenshot(
+                path=str(screenshot_dir / f"{item.name}.png")
+            )

@@ -1,6 +1,8 @@
+import pytest
 from playwright.sync_api import Page
 from pages.inventory import InventoryPage
 
+@pytest.mark.regression
 def test_sort_products_a_to_z(logged_in_page: Page):
     invent= InventoryPage(logged_in_page)
 
