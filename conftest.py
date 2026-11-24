@@ -1,5 +1,5 @@
 import pytest
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 from pathlib import Path
 from pages.cart_login import CartPage
 from pages.inventory import InventoryPage
@@ -28,6 +28,8 @@ def logged_in_page(page: Page, standard_user):
     page.locator('[data-test="password"]').fill(standard_user["password"])
     page.locator('[data-test="login-button"]').click()
 
+    expect(page).to_have_url("https://www.saucedemo.com/inventory.html")
+    
     yield page
 
     if page.locator("#react-burger-menu-btn").count()>0:
