@@ -32,10 +32,6 @@ def logged_in_page(page: Page, standard_user):
     
     yield page
 
-    if page.locator("#react-burger-menu-btn").count()>0:
-        page.locator("#react-burger-menu-btn").click()
-        page.locator('[data-test="logout-sidebar-link"]').wait_for(state="visible")
-        page.locator('[data-test="logout-sidebar-link"]').click()
 
 @pytest.fixture
 def checkout_pages(logged_in_page):
