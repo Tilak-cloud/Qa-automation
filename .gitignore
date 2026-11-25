@@ -1,4 +1,16 @@
+﻿# Virtual environment
 venv/
+
+# Python cache
 __pycache__/
 *.py[cod]
+
+# Pytest cache
 .pytest_cache/
+
+# Playwright test results and traces
+test-results/
+
+# Generated screenshots
+screenshots/
+*.png
